@@ -31,8 +31,8 @@ same directory as the org-buffer and insert a link to this file."
       (call-process "import" nil nil nil filename))
                                         ; insert into file if correctly taken
   (if (file-exists-p filename)
-      (insert (concat "[[./" filename "]]"))
-    )
+      (insert (concat "[[./" filename "]]")))
+  )
 
 
 (provide 'init-my-edit)
