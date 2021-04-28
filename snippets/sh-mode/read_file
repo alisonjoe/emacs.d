@@ -1,0 +1,16 @@
+# key: read
+# name: read file by line
+# --
+
+function ${1:ReadFile()} {
+    file=\$1
+    ${2:myArray}=()
+
+    while read line
+    do
+        $2[$idx]="$line"
+        ((idx++))
+    done < $file
+
+    echo \${$2[*]}
+}

@@ -7,5 +7,8 @@
     (with-eval-after-load 'rust-mode
       (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
 
+(require-package 'rustic)
+(require-package 'rust-playground)
+
 (provide 'init-rust)
 ;;; init-rust.el ends here

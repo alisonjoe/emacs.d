@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: unixnano
+# key: us
+# --
+time.Now().UnixNano()

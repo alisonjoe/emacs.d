@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: org-header
+# key: head
+# --
+#+TITLE: ${1:`(file-name-nondirectory buffer-file-name)`}
+#+AUTHOR: ${2:`user-login-name`}
+#+DATE: ${3:`(format-time-string "%Y-%m-%d")`}
+#+EMAL: ${4:`user-mail-address`}
+#+DESCRIPTION: the page description, e.g. for the XHTML meta tag
+#+KEYWORDS:    the page keywords, e.g. for the XHTML meta tag
+#+LANGUAGE:    utf-8
+#+OPTIONS:     H:2 num:t toc:t \n:nil @:t ::t |:t ^:t f:t TeX:t ...
+#+LATEX_HEADER: extra line(s) for the LaTeX header, like \usepackage{xyz}

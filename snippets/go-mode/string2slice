@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: string split to slice
+# key: str2s
+# --
+
+// Str2SliceString 把用sep分隔的字符串转为[]string sep默认英文逗号
+// 如果某个转换失败直接返回错误
+func Str2SliceString(l string, sep string) ([]string, error) {
+        if len(l) == 0 {
+                return nil, fmt.Errorf("input string len is zero")
+        }
+        if len(sep) == 0 {
+                sep = ","
+        }
+        t := strings.Split(l, sep)
+        r := make([]string, 0, len(t))
+        r = append(r, t...)
+        return r, nil
+}

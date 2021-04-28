@@ -1,0 +1,9 @@
+# -*- mode:snippet -*-
+# name: string to int 
+# key: s2i
+# --
+
+${1:i}, err := strconv.ParseInt(${2:str}, 10, 64)
+if err != nil {
+    fmt.Errorf("strconv parseInt fail $2:%v", $2)
+}
