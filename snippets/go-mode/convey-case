@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name:convey new case
+# key:convey
+# --
+
+convey.Convey("${1:CaseName}", func(){
+})

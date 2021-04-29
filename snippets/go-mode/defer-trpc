@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: defer trpc
+# key: defer
+# --
+defer func() {
+        rsp.ErrCode = int32(errs.Code(err))
+        rsp.ErrMsg = errorcode.GetErrMsg(rsp.ErrCode)
+        err = nil
+}()

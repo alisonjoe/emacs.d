@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name:convey new tml
+# key:convey
+# --
+
+convey.Convey ("${1:TestName}", t, func() {
+convey.Convey("${2:succ}", func(){
+})
+})

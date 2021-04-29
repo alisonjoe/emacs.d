@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: python shebang & head comment
+# key: #!
+# --
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@File  : `(file-name-nondirectory buffer-file-name)`
+@Author: alison
+@Date  : `(format-time-string "%Y-%m-%d")`
+@Desc  : $0
+'''
+
+$1

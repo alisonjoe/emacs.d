@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: plantuml
+# key: uml
+# --
+#+begin_src plantuml :file ./{1:test}.png :cmdline -charset utf-8
+${2:Alison}->${3:Monoi}: ${4:Hello}
+#+end_src

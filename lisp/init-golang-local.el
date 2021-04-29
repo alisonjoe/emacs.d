@@ -80,6 +80,7 @@
 (setq gofmt-args '("-local" "git.code.oa.com"))
 (add-hook 'go-mode-hook '(lambda ()
                            (local-set-key (kbd "C-c C-f") 'gofmt)))
+
 (add-hook 'before-save-hook 'gofmt-before-save)
 
 (add-hook 'go-mode-hook '(lambda ()
@@ -87,45 +88,19 @@
 
 (setq go-test-args "-gcflags=all=-l")
 
+;;;###autoload
+;; (defun gocomment-before-save ()
+;;   (interactive)
+;;   (when (eq major-mode 'go-mode) (maple/go-add-comment)))
+
 ;; go auto comment
+;; go get -u github.com/Gnouc/gocmt
 (defun maple/go-auto-comment()
   (interactive)
-  (unless (featurep 'imenu)
-    (require 'imenu nil t))
-  (let* ((imenu-auto-rescan t)
-         (imenu-auto-rescan-maxout (if current-prefix-arg
-                                       (buffer-size)
-                                     imenu-auto-rescan-maxout))
-         (items (imenu--make-index-alist t))
-         (items (delete (assoc "*Rescan*" items) items)))
-    (cl-mapcan
-     (lambda(item)
-       (cl-mapcan
-        (if (string= (car item) "func")
-            'maple/go-func-comment
-          'maple/go-type-comment)
-        (cdr item)))
-     items)))
-
-(defun maple/go-add-comment(func point)
-  (save-excursion
-    (goto-char point)
-    (forward-line -1)
-    (when (not (looking-at (concat "// " func)))
-      (end-of-line) (newline-and-indent)
-      (insert (concat "// " func " ..")))))
-
-(defun maple/go-func-comment(f)
-  (let ((func (car f)))
-    (if (and (string-prefix-p "(" func)
-             (string-match "[)] \\(.*\\)[(]\\(.*\\)[)]\\(.*\\)$" func))
-        (maple/go-add-comment (match-string 1 func) (cdr f))
-      (if (string-match "\\(.*\\)[(]\\(.*\\)[)]\\(.*\\)$" func)
-          (maple/go-add-comment (match-string 1 func) (cdr f))
-        (maple/go-add-comment (car f) (cdr f))))))
-
-(defun maple/go-type-comment(f)
-  (maple/go-add-comment (car f) (cdr f)))
+  (setq gocmt (concat "gocmt -i " buffer-file-name))
+  (shell-command-on-region
+   (point-min) (point-max)
+   gocmt))
 
 
 
@@ -135,6 +110,13 @@
 ;; lispcase：BaseDomain- >base-domain
 ;; eg: (setq go-tag-args (list "-transform" "camelcase"))
 (setq go-tag-args (list "-transform" "snakecase"))
+
+
+;;(defun alison-go-tag-add (transform)
+;;  "Pelase select type for TRANSFORM."
+;;  (interactive "stransform: ")
+;;  (setq go-tag-args (list "-transform" 'transform))
+
 
 (with-eval-after-load 'go-mode
   (define-key go-mode-map (kbd "C-c t") #'go-tag-add)
