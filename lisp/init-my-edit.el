@@ -8,6 +8,12 @@
 
 (setq x-select-enable-clipboard t)
 
+;; 内置的软件包管理器package.el在安装软件包时支持提前进行本机编译
+(setq package-native-compile t)
+;;; (native-compile-async "~/.emacs.d/elpa-28.0/" 'recursively)
+
+
+
 (setq line-move-visual t)
 (global-visual-line-mode t)
 

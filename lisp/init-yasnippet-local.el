@@ -7,8 +7,9 @@
 (require-package 'yasnippet-snippets)
 
 ;; add yasnippet local
-(setq yas-snippet-dirs 
-	  '("~/.emacs.d/snippets"))
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"))
+
 
 
 (yas-global-mode 1)
