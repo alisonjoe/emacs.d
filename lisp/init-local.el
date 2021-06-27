@@ -27,6 +27,7 @@
 (require 'init-coverage-local)
 (require 'init-cov-local)
 (require 'init-git-messenger-local)
+(require 'insert-translated-name)
 
 (provide 'init-local)
 ;;; init-local.el ends here

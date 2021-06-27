@@ -44,6 +44,18 @@
 (setq lsp-auto-guess-root t)
 (setq lsp-enable-text-document-color t)
 
+(defun company-yasnippet/disable-after-dot (fun command &optional arg &rest _ignore)
+  (if (eq command 'prefix)
+      (let ((prefix (funcall fun 'prefix)))
+        (when (and prefix (not
+                           (eq
+                            (char-before (- (point) (length prefix)))
+                            ?.)))
+          prefix))
+    (funcall fun command arg)))
+
+(advice-add #'company-yasnippet :around #'company-yasnippet/disable-after-dot)
+
 
 ;; (setq lsp-clients-python-command "${HOME}/.local/bin/pyls")
 ;; (setq lsp-clients-rust-command "${HOME}/.cargo/bin/rls")
