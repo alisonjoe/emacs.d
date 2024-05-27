@@ -30,6 +30,7 @@
 (require 'init-git-messenger-local)
 (require 'insert-translated-name)
 (require 'init-leetcode-local)
+(require 'init-copilot-local)
 ;;(require 'init-go-translate-local)
 
 (provide 'init-local)
