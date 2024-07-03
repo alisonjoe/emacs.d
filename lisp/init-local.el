@@ -32,6 +32,8 @@
 (require 'init-leetcode-local)
 (require 'init-copilot-local)
 ;;(require 'init-go-translate-local)
+(require 'init-swiper)
+(require 'init-helm)
 
 (provide 'init-local)
 ;;; init-local.el ends here

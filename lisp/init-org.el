@@ -383,7 +383,6 @@ typical word processor."
       (sql . t)
       (sqlite . t)
       (go . t)
-      ((if (locate-library "ob-shell") 'sh 'shell) . t)
      ))))
 
 (provide 'init-org)
