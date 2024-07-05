@@ -75,3 +75,20 @@ org-mode 是一个 Emacs 的 major mode，用于处理文本和笔记。org-mode
 #+end_src
 
 这些只是 org-mode 的一些基础操作，还有更多高级特性等待你去探索。
+
+
+* 关闭临时文件备份或者统一备份到backup目录
+
+你可以通过配置 Emacs 来关闭临时文件备份或者统一备份到 backup 目录。具体来说，你可以使用以下代码来禁用备份功能：
+
+#+begin_src
+(setq make-backup-files nil)
+#+end_src
+
+如果你希望使用备份，但是需要将备份文件保存到一个特定的目录中（如 backup 目录），可以使用以下代码：
+
+#+begin_src
+(setq backup-directory-alist '(("." . "~/backup")))
+=
+
+这将把所有备份文件保存到 ~/backup 目录中。
