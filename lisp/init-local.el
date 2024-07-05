@@ -34,6 +34,7 @@
 ;;(require 'init-go-translate-local)
 (require 'init-swiper)
 (require 'init-helm)
+(require 'init-gptel-local)
 
 (provide 'init-local)
 ;;; init-local.el ends here

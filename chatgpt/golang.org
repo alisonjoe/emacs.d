@@ -1,0 +1,40 @@
+* 这个文档主要记录AI问答，关于 GOLANG 语言编程 主要使用中文
+
+有什么问题我可以帮助您解答？
+
+* 关于error.Join的使用
+
+=error.Join= 方法位于 =errors= 包中，它用于将多个 error 组合成一个字符串返回。它的定义如下：
+
+#+begin_src go
+func Join(errs []error, sep string) error
+#+end_src
+
+其中，第一个参数是一个 =[]error= 类型的切片，即要组合的多个 error。第二个参数是一个字符串，表示各个 error 之间的间隔符。
+
+如果 =errs= 中有多个 error，它们会每个人之间用 =sep= 间隔，并拼接成一个字符串返回。如果 =errs= 为空或只有一个 error，则直接返回其中唯一的 error。如果 =sep= 为空，则默认使用空格作为间隔符。
+
+例如，以下代码演示了 =error.Join= 方法的基本用法：
+
+#+begin_src go
+package main
+
+import (
+        "errors"
+        "fmt"
+)
+
+func main() {
+        err1 := errors.New("error 1")
+        err2 := errors.New("error 2")
+        err3 := errors.New("error 3")
+        err := errors.Join([]error{err1, err2, err3}, ", ")
+        fmt.Println(err)
+}
+#+end_src
+
+输出结果为：
+
+#+begin_src
+error 1, error 2, error 3
+#+end_src
