@@ -10,8 +10,7 @@
 ;; 配置 Go 相关包
 (use-package go-mode
   :ensure t
-  :hook ((before-save . my-gofmt-and-goimports)
-         (go-mode . gorepl-mode)
+  :hook ((go-mode . gorepl-mode)
          (go-mode . go-eldoc-setup)
          (go-mode . go-guru-hl-identifier-mode))
   :bind (("C-c C-r" . go-remove-unused-imports)
@@ -20,6 +19,7 @@
          ("C-c C-k" . godoc))
   :config
   (setq gofmt-command "goimports"))
+
 
 (use-package go-tag
   :ensure t
@@ -99,7 +99,19 @@
   "Run gofmt with -s and -r 'interface{} -> any', then run goimports if it's a Go file."
   (when (eq major-mode 'go-mode)
     (my-gofmt-s-r)
-    (gofmt)))
+    (gofmt)
+    (save-buffer))) ;; 保存文件
+
+(defun my-gofmt-and-goimports-after-save ()
+  "Run gofmt and goimports after saving the file."
+  (add-hook 'after-save-hook #'my-gofmt-and-goimports nil t))
+
+(add-hook 'go-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook #'my-gofmt-and-goimports-after-save nil t)))
+
+
+
 
 (defun run-go-mod-tidy ()
   "Run `go mod tidy` synchronously in the current project if it's a Go file."
@@ -153,5 +165,6 @@
                             (3 "lispcase")
                             (4 "keep")))))
 
+(message "init-golang-local loaded successfully!")
 (provide 'init-golang-local)
 ;;; init-golang-local.el ends here
