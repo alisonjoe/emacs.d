@@ -1,0 +1,19 @@
+* Redis Incr 怎么设置过期时间
+
+Redis 的 =INCR= 命令只能增加一个 Key 对应的值，而不能设置过期时间。如果需要一个具有过期时间的计数器，可以使用 =SETEX= 命令来设置一个带过期时间的 Key，然后结合 =INCR= 命令来实现计数器功能，例如：
+
+#+begin_src
+SETEX my_counter 3600 0   # 有效期为 1 小时，计数器初始值为 0
+#+end_src
+
+每次需要增加计数器的值时，可以使用 INCR 命令：
+
+#+begin_src
+INCR my_counter
+#+end_src
+
+注意，设置的时间单位为秒，如果需要设置其他时间单位，可以使用多个参数，例如：
+
+#+begin_src
+SETEX my_counter 60m 0   # 有效期为 60 分钟，计数器初始值为 0
+#+end_src

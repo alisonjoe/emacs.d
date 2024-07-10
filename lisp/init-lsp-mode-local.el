@@ -9,6 +9,28 @@
 (require-package 'helm-lsp)
 (require-package 'projectile)
 
+;; 设置在需要时才启动 LSP
+(defun my/lsp-init-on-demand ()
+  "Initialize LSP mode on demand."
+  (when (and (buffer-file-name)
+             (buffer-live-p (current-buffer))
+             (not (lsp-workspaces)))
+    (condition-case err
+        (lsp-deferred)
+      (error (message "Error initializing LSP: %s" (error-message-string err))))))
+
+;; 在需要时启动 LSP
+(dolist (hook '(find-file-hook))
+  (add-hook hook 'my/lsp-init-on-demand))
+
+;; 延迟恢复的缓冲区加载
+(setq desktop-restore-eager 5)
+
+;; 提高恢复速度
+(setq desktop-restore-frames nil)
+(setq desktop-restore-reuses-frames t)
+
+;; 启动相应 mode 时启动 yasnippet
 (dolist (hook '(python-mode-hook
                 c++-mode-hook
                 c-mode-hook
@@ -26,6 +48,7 @@
   (add-hook hook #'lsp-deferred)
   (add-hook hook #'yas-minor-mode))
 
+;; 优化垃圾回收和进程输出读取
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
@@ -41,7 +64,9 @@
   (lsp-register-custom-settings
    '(("gopls.completeUnimported" t t)
      ("gopls.staticcheck" t t)
-     ("gopls.usePlaceholders" t t))))
+     ("gopls.usePlaceholders" t t)))
+  (setq lsp-language-id-configuration (append lsp-language-id-configuration
+                                              '((emacs-lisp-mode . "emacs-lisp")))))
 
 (lsp-treemacs-sync-mode t)
 
@@ -57,10 +82,10 @@
 
 (advice-add #'company-yasnippet :around #'company-yasnippet/disable-after-dot)
 
-;; Ensure projectile is used to manage project switching
+;; 确保 projectile 用于管理项目切换
 (projectile-mode +1)
 
-;; Track the previous project
+;; 跟踪上一个项目
 (defvar my/last-project nil)
 
 (defun my/switch-project-hook ()

@@ -38,3 +38,153 @@ func main() {
 #+begin_src
 error 1, error 2, error 3
 #+end_src
+
+
+* for 建议
+
+片、字符串等序可以具列类型。建议使用以下方式遍历：
+
+   #+begin_src go
+   for i, v :=体说说您需要关于 for 循环的哪些方面的建议吗？
+
+在 Golang 中，for 有多种用法，不同的用法适用于不同的场景。以下是一些 for 循环的常见用法及其建议：
+
+1. 遍历数组、切片、字符串：
+
+   在 Golang 中，for 可以用于遍历数组、切片、字符串等序可以具列类型。建议使用以下方式遍历：
+
+   #+begin_src go
+   for i, v := range arr {
+       // i 表示当前元素的下标，v 表示当前元素的值
+       // 具体操作
+   }
+   #+end_src
+
+   其中，=i= 表示当前元素的下标，=v= 表示当前元素的值。使用 =range= 关键字可以让循环自动的处理序列中的每个元素。
+
+2. 遍历 map：
+
+   在 Golang 中，for 可以用于遍历 map。建议使用以下方式遍历：
+
+   #+begin_src go
+   for k, v := range m {
+       // k 表示当前键，v 表示当前值
+       // 具体操作
+   }
+   #+end_src
+
+   其中，=k= 表示当前键，=v= 表示当前值。同样使用 =range= 关键字，循环每次会返回 map 中的键和值。
+
+3. 死循环：
+
+   在需要无限循环的操作中，可以使用 for 无限循环。建议使用以下方式：
+
+   #+begin_src go
+   for {
+       // 具体操作
+   }
+   #+end_src
+
+   无限循环可以通过 break 来跳出。
+
+4. 遍历通道（channel）：
+
+   在 Golang 中，for 可以用于遍历通道。建议使用以下方式遍历：
+
+   #+begin_src go
+   for v := range ch {
+       // v 表示当前通道中的值
+       // 具体操作
+   }
+   #+end_src
+
+   在通道关闭前，for 循环会一直等待通道中的值。
+
+5. 常规循环：
+
+   在需要常规做 n 次循环操作，建议使用以下方式：
+
+   #+begin_src go
+   for i := 0; i < n; i++ {
+       // 具体操作
+   }
+   #+end_src
+
+   其中，i 从 0 开始取，每次执行后加 1，循环 n 次。
+
+这些都是常见的 for 循环用法，具体用哪种方式要根据实际需求来决定。
+
+
+* slog 用法
+
+=slog= 是一个简单的日志库，可以很方便地在 Golang 代码中记录和输出日志信息。它提供了一个比较方便的 API 以及不同级别的日志输出。以下是 slog 的基本使用方法：
+
+1. 导入 slog 包及其依赖：
+
+   #+begin_src go
+   import (
+       "github.com/slclub/slog"
+   )
+   #+end_src
+
+2. 初始化日志：
+
+   #+begin_src go
+   func main() {
+       // 初始化 slogs，第一个参数表示日志级别
+       slog.Init(slog.LevelDebug)
+
+       // 记录日志
+   }
+   #+end_src
+
+3. 记录日志：
+
+   #+begin_src go
+   slog.Debug("debug message")
+   slog.Info("info message")
+   slog.Warn("warn message")
+   slog.Error("error message")
+   #+end_src
+
+   slog 提供了不同级别的日志输出，支持的级别包括 Debug、Info、Warn、Error、Fatal、Panic。=Error= 级别以上的日志会写入到文件中。
+
+4. 配置输出样式：
+
+   slog 支持通过 =slog.SetFormat= 方法来设置输出样式。默认格式是：
+
+   #+begin_src txt
+   2021/10/21 11:54:00 [Debug] this is a debug message
+   #+end_src
+
+   可以通过以下代码来自定义输出格式：
+
+   #+begin_src go
+   slog.SetFormat(`[${LEVEL}] ${DATE} ${TIME} ${FILE}(${LINE})\n${MESSAGE}\n`)
+   #+end_src
+
+   其中，=${LEVEL}= 表示日志级别，=${DATE}= 表示日期，=${TIME}= 表示时间，=${FILE}= 表示文件名，=${LINE}= 表示行号，=${MESSAGE}= 表示日志内容。
+
+除了以上的基本用法，slog 还有很多附加功能，比如可以输出到控制台和文件、支持同时输出多个日志、支持日志轮转等。更多详细信息可以参考 slog 的文档：https://github.com/slclub/slog
+
+- slog.Error("fail", "msg fail", "err", err.Error()) 这里面 "fail", "msg fail", "err", err.Error() 分别代表什么
+
+在 slog.Error 方法中，"fail"、"msg fail"、"err" 和 err.Error() 分别代表以下含义：
+
+- "fail" 是 slog.Error 方法的第一个参数，表示错误的信息。
+- "msg fail" 是 slog.Error 方法的中间参数，表示错误信息的附加说明。
+- "err" 是 slog.Error 方法的一个键值对，用来存储和记录错误相关的信息。
+- err.Error() 是 slog.Error 方法的一个键值对，表示具体的错误信息。
+
+在 slog 中，使用键值对的方式存储错误信息，这样可以更方便地查看和记录错误的详细信息。例如，err 可以用来记录错误的文件名、行号等相关信息。
+
+- slog.Info("fail", "msg fail", "err", err.Error()) 这里面 "fail", "msg fail", "err", err.Error() 分别代表什么
+
+在 slog.Info 方法中，"fail"、"msg fail"、"err" 和 err.Error() 分别代表以下含义：
+
+- "fail" 是 slog.Info 方法的第一个参数，表示信息的内容。
+- "msg fail" 是 slog.Info 方法的中间参数，用来记录信息的附加说明。
+- "err" 是 slog.Info 方法的一个键值对，用来存储和记录和信息相关的错误信息。
+- err.Error() 是 slog.Info 方法的一个键值对，表示具体的错误信息。
+
+与 slog.Error 方法类似，slog.Info 方法也使用键值对来存储相关信息，使得日志记录更加方便和详细。例如，err 可以用来记录写入日志的源代码文件名、行号等信息。
