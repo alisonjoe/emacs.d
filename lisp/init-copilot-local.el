@@ -6,6 +6,11 @@
              (expand-file-name (concat user-emacs-directory "lisp/copilot.el")))
 (require 'copilot)
 
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
 ;; Copilot automatically provide completions
 (add-hook 'prog-mode-hook 'copilot-mode)
 

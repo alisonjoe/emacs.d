@@ -3,7 +3,6 @@
 ;;; Code:
 
 
-(require-package 'use-package)
 (require 'init-super-save-local)
 (require 'init-auto-save-local)
 (require 'init-yasnippet-local)
