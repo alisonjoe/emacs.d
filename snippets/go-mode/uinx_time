@@ -1,0 +1,4 @@
+# key: ts
+# name: uinx time seconds
+# --
+time.Now().Unix()

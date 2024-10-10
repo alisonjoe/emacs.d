@@ -1,0 +1,4 @@
+# key: sp
+# name: string split
+# --
+${1:arraryList} := strings.Split(${2:str}, "${3:,}")

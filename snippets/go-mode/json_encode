@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: json encode
+# key: js
+# --
+
+${1:jsonStu}, ${2:err} := json.Marshal(${3:stu})
+if $2 != nil {
+return $2
+}

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: columnName VARCHAR NOT NULL...
+# key: cchar
+# --
+        ,	${1:Name} VARCHAR(${2:16}) ${3:NOT NULL} ${4:DEFAULT ''} ${5:COMMENT "NAME COMMENT"}

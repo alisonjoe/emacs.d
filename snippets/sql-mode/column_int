@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: columnName ColumnType NOT NULL...
+# key: cint
+# --
+        ,	${1:Name} ${2:INT} ${3:NOT NULL} ${4:DEFAULT '0'} ${5:COMMENT "NAME COMMENT"}

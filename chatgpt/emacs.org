@@ -1,0 +1,165 @@
+* GPT 关于 EMACS 解答
+
+可以提供更多具体的问题吗？我可以帮助你更好地解决关于 EMACS 的问题。
+
+
+* 关于 org-mode 常规使用
+
+好的，关于 org-mode 常规使用，这里有一些常见的问题和解答：
+
+1. 什么是 org-mode？
+
+org-mode 是一个 Emacs 的 major mode，用于处理文本和笔记。org-mode 在约束性排版的基础上提供了一些强大的功能，例如制作待办事项列表、日程安排和绘制表格。
+
+2. 如何创建一个 TODO 任务？
+
+可以通过在 org-mode 中输入 TODO 关键字来创建一个 TODO 任务。例如，在 org-mode 中输入：
+
+#+begin_src
+* TODO 做作业
+#+end_src
+
+就可以创建一个新的 TODO 任务。
+
+3. 如何将 TODO 任务标记为完成？
+
+在 TODO 任务前添加 "DONE" 关键字即可将它标记为完成。例如：
+
+#+begin_src
+* TODO 做作业
+#+end_src
+
+完成作业后：
+
+#+begin_src
+* DONE 做作业
+#+end_src
+
+4. 如何添加一个日期到日历？
+
+在 org-mode 中，可以使用 "SCHEDULED" 和 "DEADLINE" 关键字来设置任务的开始和到期日期。例如：
+
+#+begin_src
+* TODO 做作业
+  SCHEDULED: <2022-01-01 Sat>
+#+end_src
+
+5. 如何添加一个标签？
+
+可以通过在任务标题后面添加冒号和标签来添加一个标签。例如：
+
+#+begin_src
+* TODO 做作业 :学习:
+#+end_src
+
+6. 如何为任务添加说明？
+
+可以在任务标题下面添加一个文本块来添加说明。例如：
+
+#+begin_src
+* TODO 做作业
+  ** 说明
+  我需要做两篇文章和一份作业。
+#+end_src
+
+7. 如何在 org-mode 中绘制表格？
+
+可以使用 Emacs 内置的表格编辑器来在 org-mode 中绘制表格。使用 =|= 分隔符来定义列，使用 =-= 分隔符来定义表头和表格内容之间的分隔线。例如：
+
+#+begin_src
+| 名称         | 数量 |
+|--------------+------|
+| 苹果         | 3    |
+| 香蕉         | 2    |
+| 橙子         | 4    |
+#+end_src
+
+这些只是 org-mode 的一些基础操作，还有更多高级特性等待你去探索。
+
+
+* 关闭临时文件备份或者统一备份到backup目录
+
+你可以通过配置 Emacs 来关闭临时文件备份或者统一备份到 backup 目录。具体来说，你可以使用以下代码来禁用备份功能：
+
+#+begin_src
+(setq make-backup-files nil)
+#+end_src
+
+如果你希望使用备份，但是需要将备份文件保存到一个特定的目录中（如 backup 目录），可以使用以下代码：
+
+#+begin_src
+(setq backup-directory-alist '(("." . "~/backup")))
+=
+
+这将把所有备份文件保存到 ~/backup 目录中。
+
+* golang 和 gptel
+(defun maple/go-auto-comment ()
+  "Automatically add comments to Go code using gocmt and GPTel."
+  (interactive)
+  (let ((gocmt-command (concat "gocmt -i " buffer-file-name)))
+    (shell-command-on-region (point-min) (point-max) gocmt-command)
+    ;; 使用 GPTel 包生成评论
+    (let ((comment-prompt (concat "Please add comments to the following Go code:\n\n"
+                                  (buffer-substring-no-properties (point-min) (point-max)))))
+      (gptel-send
+       comment-prompt
+       (lambda (response)
+         (save-excursion
+           (goto-char (point-max))
+           (insert "\n\n" response)))))))
+这段代码每行作用是
+
+这段代码为 Emacs 中的一个函数，用于自动向 Go 代码中添加注释。具体来说：
+
+- 第一行定义了一个名为 "maple/go-auto-comment" 的函数。
+- 第二行使用 "interactive" 声明该函数可以被用户交互调用。
+- 第三行定义了一个变量 "gocmt-command"，用于指定调用 "gocmt" 命令的完整字符串，其中 "-i" 表示直接修改文件而不是输出到终端。
+- 第四行使用 "shell-command-on-region" 函数运行 "gocmt-command" 命令，将文件从缓冲区的第一行到最后一行传递给它。
+  它将使用 "gocmt" 命令自动添加注释。
+- 第七行创建一个名为 "comment-prompt" 的变量，用于在 GPTel 包中使用的评论提示信息。它将文件从缓冲区中的第一行到最后一行传递给它。
+- 第八行使用 "gptel-send" 函数（需要事先加载 GPTel 包）向 GPT 自然语言处理系统发送 "comment-prompt"，并在回调中接收 GPT 的响应。
+- 第九行使用 "save-excursion" 函数保存当前光标位置，然后将响应插入到缓冲区最后一行的下方，以添加注释。
+
+  comment-prompt 是什么内容
+
+"comment-prompt" 是一个字符串变量，用于在 GPTel 包中使用的一个评论提示信息。在这里，它被设置为一个多行字符串，其中包含两条消息：
+- 请将注释添加到以下 Go 代码中。
+- 在字符串的最后，将缓冲区中的代码插入到字符串中，以便将其发送到 GPT 接口。其目的是向 GPT 提供更好的上下文信息，让其能够更好地理解并生成相关的注释内容。
+
+ 添加日志，打印comment-prompt和gpt返回的response
+
+修改函数代码如下，添加了 =message= 函数用于在 minibuffer 中输出日志：
+
+#+begin_src
+(defun maple/go-auto-comment ()
+  "Automatically add comments to Go code using gocmt and GPTel."
+  (interactive)
+  (let ((gocmt-command (concat "gocmt -i " buffer-file-name))
+        (comment-prompt (concat "Please add comments to the following Go code:\n\n"
+                                (buffer-substring-no-properties (point-min) (point-max)))))
+    (shell-command-on-region (point-min) (point-max) gocmt-command)
+    ;; 使用 GPTel 包生成评论
+    (gptel-send
+     comment-prompt
+     (lambda (response)
+       (message "comment-prompt: %s\ngpt-response: %s" comment-prompt response)
+       (save-excursion
+         (goto-char (point-max))
+         (insert "\n\n" response))))))
+
+#+end_src
+
+它会在函数执行时输出 =comment-prompt= 和 =gpt-response= 到 minibuffer 中。
+
+- helm-M-x-execute-command: Wrong number of arguments: (0 . 1), 2
+
+这个错误通常发生在使用 Helm 插件的 M-x 命令时。它表示给函数传递的参数数量不正确。具体而言，它需要一个参数 (0 . 1)，但是传递了不同数量的参数。
+
+这可能是由于以下一些情况所致：
+
+1. 版本不兼容：这个错误可能是由不同版本的 Helm 和 Emacs 之间的不兼容性引起的。尝试升级或降级 Helm 插件和 Emacs 版本来解决此问题。
+
+2. 配置错误：这个错误也可能由 Helm 配置错误引起的。请确保你正确配置并加载了 Helm 插件。
+
+3. 冲突插件：这个错误也可能是由其他插件与 Helm 插件的冲突引起的。尝试禁用其他插件并逐一排除问题以找到原因。

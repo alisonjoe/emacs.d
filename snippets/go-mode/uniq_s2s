@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: uniq slice return slice
+# key: s2s
+# --
+
+// RemoveDumplicateElement 输入切片l 进行去重后返回唯一切片r
+func RemoveDuplicateElement(l []string) []string {
+       r := make([]string, 0, len(l))
+       temp := map[string]struct{}{}
+       for _, item := range l {
+              if _, ok := temp[item]; !ok {
+                     temp[item] = struct{}{}
+                     r = append(r, item)
+              }
+       }
+       return r
+}
