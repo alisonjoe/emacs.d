@@ -15,10 +15,9 @@
 
 ;;; Standard package repositories
 
-(add-to-list 'package-archives '( "melpa" . "http://melpa.org/packages/") t)
-;; (setq package-archives '(("gnu"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
-;;                          ("melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
-;; 						 ("org" . "	http://mirrors.cloud.tencent.com/elpa/org/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-unsigned-archives "melpa")
+
 ;; Official MELPA Mirror, in case necessary.
 ;;(add-to-list 'package-archives (cons "melpa-mirror" (concat proto "://www.mirrorservice.org/sites/melpa.org/packages/")) t)
 
