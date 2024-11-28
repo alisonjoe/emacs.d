@@ -2,100 +2,128 @@
 ;;; Commentary:
 ;;; Code:
 
-(require-package 'lsp-mode)
-(require-package 'lsp-ivy)
-(require-package 'lsp-treemacs)
-(require-package 'dap-mode)
-(require-package 'helm-lsp)
-(require-package 'projectile)
+(require 'use-package)
 
-;; 设置在需要时才启动 LSP
-(defun my/lsp-init-on-demand ()
-  "Initialize LSP mode on demand."
-  (when (and (buffer-file-name)
-             (buffer-live-p (current-buffer))
-             (not (lsp-workspaces)))
-    (condition-case err
-        (lsp-deferred)
-      (error (message "Error initializing LSP: %s" (error-message-string err))))))
-
-;; 在需要时启动 LSP
-(dolist (hook '(find-file-hook))
-  (add-hook hook 'my/lsp-init-on-demand))
-
-;; 延迟恢复的缓冲区加载
-(setq desktop-restore-eager 5)
-
-;; 提高恢复速度
-(setq desktop-restore-frames nil)
-(setq desktop-restore-reuses-frames t)
-
-;; 启动相应 mode 时启动 yasnippet
-(dolist (hook '(python-mode-hook
-                c++-mode-hook
-                c-mode-hook
-                rust-mode-hook
-                html-mode-hook
-                js-mode-hook
-                typescript-mode-hook
-                json-mode-hook
-                yaml-mode-hook
-                dockerfile-mode-hook
-                shell-mode-hook
-                css-mode-hook
-                elisp-mode-hook
-                go-mode-hook))
-  (add-hook hook #'lsp-deferred)
-  (add-hook hook #'yas-minor-mode))
-
-;; 优化垃圾回收和进程输出读取
+;; 通用设置
 (setq gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
-      treemacs-space-between-root-nodes nil
-      company-idle-delay 0.0
-      company-minimum-prefix-length 1
-      lsp-idle-delay 0.1
-      lsp-log-io t)
+        read-process-output-max (* 1024 1024)
+        lsp-idle-delay 0.1
+        lsp-log-io nil
+        lsp-auto-guess-root t
+        lsp-enable-text-document-color t
+        treemacs-space-between-root-nodes nil)
 
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (require 'dap-cpptools)
-  (yas-global-mode)
-  (lsp-register-custom-settings
-   '(("gopls.completeUnimported" t t)
-     ("gopls.staticcheck" t t)
-     ("gopls.usePlaceholders" t t)))
-  (setq lsp-language-id-configuration (append lsp-language-id-configuration
-                                              '((emacs-lisp-mode . "emacs-lisp")))))
+;; LSP 模式及其依赖
+(use-package lsp-mode
+        :ensure t
+        :hook ((python-mode
+                       c++-mode
+                       c-mode
+                       rust-mode
+                       html-mode
+                       js-mode
+                       typescript-mode
+                       json-mode
+                       yaml-mode
+                       dockerfile-mode
+                       shell-mode
+                       css-mode
+                       elisp-mode
+                       go-mode
+                       protobuf-mode) . lsp-deferred)
+        :commands lsp-deferred
+        :config
+        (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+        (lsp-treemacs-sync-mode 1)
+        ;; 自定义设置
+        (lsp-register-custom-settings
+                '(("gopls.completeUnimported" t t)
+                         ("gopls.staticcheck" t t)
+                         ("gopls.usePlaceholders" t t)))        )
 
-(lsp-treemacs-sync-mode t)
 
-(setq lsp-auto-guess-root t)
-(setq lsp-enable-text-document-color t)
+;; 支持 protobuf-mode
+(use-package protobuf-mode
+        :ensure t
+        :mode ("\\.proto\\'" . protobuf-mode)
+        :config
+        (add-hook 'protobuf-mode-hook 'lsp-deferred))
 
-(defun company-yasnippet/disable-after-dot (fun command &optional arg &rest _ignore)
-  (if (eq command 'prefix)
-      (let ((prefix (funcall fun 'prefix)))
-        (when (and prefix (not (eq (char-before (- (point) (length prefix))) ?.)))
-          prefix))
-    (funcall fun command arg)))
+;; 注册 Protobuf 的 bufls 支持
+(use-package lsp-mode
+  :config
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection "bufls")
+    :major-modes '(protobuf-mode)
+    :server-id 'bufls)))
 
-(advice-add #'company-yasnippet :around #'company-yasnippet/disable-after-dot)
+;; 辅助工具
+(use-package lsp-ivy :ensure t)
+(use-package lsp-treemacs :ensure t)
+(use-package helm-lsp :ensure t)
+(use-package yasnippet
+  :ensure t
+  :config (yas-global-mode 1))
 
-;; 确保 projectile 用于管理项目切换
-(projectile-mode +1)
+;; 调试工具
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+  (dap-ui-mode)
+  (dap-tooltip-mode)
+  (tooltip-mode 1)
+  (dap-ui-controls-mode 1))
 
-;; 跟踪上一个项目
-(defvar my/last-project nil)
+;; 各语言调试后端
+(use-package dap-go
+  :ensure nil
+  :after dap-mode
+  :config
+  (setq dap-go-dlv-path (executable-find "dlv")))
 
-(defun my/switch-project-hook ()
-  "Hook to run when switching projects with projectile."
-  (when (and my/last-project
-             (not (string= my/last-project (projectile-project-root))))
-    (lsp-workspace-shutdown))
-  (setq my/last-project (projectile-project-root)))
+(use-package dap-cpptools
+  :ensure nil
+  :after dap-mode
+  :config
+  (setq dap-cpptools-debug-path (executable-find "OpenDebugAD7")))
 
-(add-hook 'projectile-after-switch-project-hook 'my/switch-project-hook)
+(use-package dap-python
+  :ensure nil
+  :after dap-mode
+  :config
+  (setq dap-python-debugger 'debugpy)
+  (setq dap-python-executable "python3")) ;; 根据需要调整路径
+
+;; Projectile 支持
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode +1)
+  ;; 追踪项目切换
+  (defvar my/last-project nil)
+  (defun my/switch-project-hook ()
+    "关闭上一个项目的 LSP 工作空间。"
+    (when (and my/last-project
+               (not (string= my/last-project (projectile-project-root))))
+      (lsp-workspace-shutdown))
+    (setq my/last-project (projectile-project-root)))
+  (add-hook 'projectile-after-switch-project-hook 'my/switch-project-hook))
+
+;; 动态启用/禁用鼠标功能
+(defun enable-mouse ()
+  "启用鼠标操作功能。"
+  (xterm-mouse-mode 1)
+  (message "Mouse enabled for debugging."))
+
+(defun disable-mouse ()
+  "禁用鼠标操作功能。"
+  (xterm-mouse-mode -1)
+  (message "Mouse disabled after debugging."))
+
+(add-hook 'dap-session-created-hook #'enable-mouse)
+(add-hook 'dap-terminated-hook #'disable-mouse)
 
 (provide 'init-lsp-mode-local)
 ;;; init-lsp-mode-local.el ends here

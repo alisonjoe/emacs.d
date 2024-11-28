@@ -3,48 +3,49 @@
 ;;; Code:
 
 (add-to-list 'load-path
-             (expand-file-name (concat user-emacs-directory "lisp/copilot.el")))
+        (expand-file-name (concat user-emacs-directory "lisp/copilot.el")))
 (require 'copilot)
 
 (use-package editorconfig
-  :ensure t
-  :config
-  (editorconfig-mode 1))
+        :ensure t
+        :config
+        (editorconfig-mode 1))
 
-;; Copilot automatically provide completions
-(add-hook 'prog-mode-hook 'copilot-mode)
+;; 最大字符限制
+(defvar copilot-max-characters 5000
+        "The maximum number of characters in a buffer before disabling Copilot.")
 
-;; Complete by copilot first, then auto-complete
+(defun maybe-disable-copilot ()
+        "Disable Copilot if the buffer size exceeds `copilot-max-characters`."
+        (if (> (buffer-size) copilot-max-characters)
+                (progn
+                        (copilot-mode -1)
+                        (message "Copilot disabled for large buffer (%d characters)." (buffer-size)))
+                (copilot-mode 1))) ;; 启用 Copilot，确保小文件可以正常运行
+
+;; 在 prog-mode 中动态检测文件大小
+(add-hook 'prog-mode-hook 'maybe-disable-copilot)
+
+;; 完成顺序：优先使用 Copilot，其次是 auto-complete
 (defun my-tab ()
-  (interactive)
-  (or (copilot-accept-completion)
-      (ac-expand nil)))
+        "Try accepting Copilot completion; fallback to auto-complete."
+        (interactive)
+        (or (copilot-accept-completion)
+                (ac-expand nil)))
 
+;; 禁用 auto-complete 的 inline 提示
 (with-eval-after-load 'auto-complete
-  ;; Disable inline preview
-  (setq ac-disable-inline t)
-  ;; Show menu if have only one candidate
-  (setq ac-candidate-menu-min 0))
+        (setq ac-disable-inline t)
+        (setq ac-candidate-menu-min 0))
 
-(setq copilot-max-characters 1000000) ;; 增大为 1,000,000
-
+;; 绑定 TAB 键
 (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
 (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
 
-;; Bind `my-tab` function to TAB key in prog-mode
 (add-hook 'prog-mode-hook
-          (lambda ()
-            (local-set-key (kbd "TAB") 'my-tab)
-            (local-set-key (kbd "<tab>") 'my-tab)))
-
-(defun maybe-disable-copilot ()
-  "Disable Copilot if the buffer is too large."
-  (when (> (buffer-size) copilot-max-characters)
-    (copilot-mode -1)
-    (message "Copilot disabled due to large buffer size.")))
-
-(add-hook 'copilot-mode-hook 'maybe-disable-copilot)
-
+        (lambda ()
+                (local-set-key (kbd "TAB") 'my-tab)
+                (local-set-key (kbd "<tab>") 'my-tab)))
 
 (provide 'init-copilot-local)
 ;;; init-copilot-local.el ends here

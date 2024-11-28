@@ -3,8 +3,8 @@
 ;;; Code:
 
 
-(require 'init-super-save-local)
-(require 'init-auto-save-local)
+;;; (require 'init-super-save-local)
+;;; (require 'init-auto-save-local)
 (require 'init-yasnippet-local)
 (require 'init-undo-tree-local)
 (require 'init-auto-complete-local)
@@ -13,7 +13,7 @@
 (require 'init-evil-local)
 (require 'init-agenda-file-local)
 (require 'init-my-edit)
-;; (require 'init-protobuf-mode-local)
+(require 'init-protobuf-mode-local)
 (require 'init-ac-php-local)
 (require 'init-golang-local)
 (require 'init-lsp-mode-local)
@@ -34,7 +34,7 @@
 (require 'init-copilot-local)
 ;;(require 'init-go-translate-local)
 (require 'init-swiper)
-(require 'init-helm)
+;; (require 'init-helm)
 (require 'init-gptel-local)
 
 (provide 'init-local)
