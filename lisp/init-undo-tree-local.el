@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(require-package 'undo-tree)
 
 (setq undo-tree-history-directory-alist
       `(("." . ,(concat user-emacs-directory "undo-tree-history"))))

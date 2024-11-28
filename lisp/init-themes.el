@@ -9,6 +9,8 @@
 ;; first-time startup on Emacs > 26.3.
 (setq custom-safe-themes t)
 
+(set-face-attribute 'default nil :height 140)
+
 ;; If you don't customize it, this is the theme you get.
 (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
 

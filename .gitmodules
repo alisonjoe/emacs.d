@@ -3,4 +3,4 @@
 	url = https://github.com/copilot-emacs/copilot.el.git
 [submodule "personal_snippets"]
 	path = personal_snippets
-	url = git@github.com:alisonjoe/personal_snippets.git
+	url = https://github.com/alisonjoe/personal_snippets.git

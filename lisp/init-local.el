@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-
 (require 'init-super-save-local)
 (require 'init-auto-save-local)
 (require 'init-yasnippet-local)
@@ -13,14 +12,13 @@
 (require 'init-evil-local)
 (require 'init-agenda-file-local)
 (require 'init-my-edit)
-;; (require 'init-protobuf-mode-local)
+(require 'init-protobuf-mode-local)
 (require 'init-ac-php-local)
 (require 'init-golang-local)
 (require 'init-lsp-mode-local)
 (require 'init-coverage-local)
 (require 'init-disable-mouse-local)
 ;; new
-(require 'init-ivy)
 (require 'init-highlight-doxygen-local)
 (require 'init-dashboard-local)
 (require 'init-org-capture-templates-local)
@@ -33,8 +31,7 @@
 (require 'init-leetcode-local)
 (require 'init-copilot-local)
 ;;(require 'init-go-translate-local)
-(require 'init-swiper)
-(require 'init-helm)
+;; (require 'init-helm)
 (require 'init-gptel-local)
 
 (provide 'init-local)

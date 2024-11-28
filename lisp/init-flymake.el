@@ -31,5 +31,7 @@
             (lambda ()
               (add-hook 'eldoc-documentation-functions 'flymake-eldoc-function nil t))))
 
+(setq flymake-no-changes-timeout 5)
+
 (provide 'init-flymake)
 ;;; init-flymake.el ends here
