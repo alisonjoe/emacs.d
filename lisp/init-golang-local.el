@@ -7,9 +7,13 @@
 (eval-when-compile
   (require 'use-package))
 
+;; 强制禁用全局加载
+(setq-default go-mode-hook nil)
+(setq-default lsp-mode-hook nil)
 ;; 配置 Go 相关包
 (use-package go-mode
   :ensure t
+  :mode "\\.go\\'"
   :hook ((go-mode . gorepl-mode)
          (go-mode . go-eldoc-setup)
          (go-mode . go-guru-hl-identifier-mode))
@@ -41,6 +45,8 @@
         flycheck-gometalinter-config "~/.emacs.d/config/.gometalinter-config.json")
   (eval-after-load 'flycheck
     '(add-hook 'go-mode-hook #'flycheck-golangci-lint-setup)))
+(add-hook 'go-mode-hook (lambda () (flymake-mode -1)))
+
 
 (use-package go-gen-test
   :ensure t)
@@ -151,9 +157,6 @@
 (add-hook 'go-mode-hook
           (lambda ()
             (local-set-key (kbd "C-c C-c") 'maple/go-auto-comment)))
-
-
-
 
 (defun alison-go-tag-add (n)
   "Please select type for TRANSFORM."

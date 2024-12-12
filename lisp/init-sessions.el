@@ -6,6 +6,10 @@
 (setq desktop-path (list user-emacs-directory)
       desktop-auto-save-timeout 600)
 (desktop-save-mode 1)
+(setq desktop-restore-eager 5) ; 启动时仅恢复 5 个缓冲区
+(setq desktop-restore-frames nil) ; 不恢复窗口配置
+(setq desktop-restore-reuses-frames t) ; 重用现有框架
+
 
 (defun sanityinc/desktop-time-restore (orig &rest args)
   (let ((start-time (current-time)))
