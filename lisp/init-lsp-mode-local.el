@@ -84,11 +84,60 @@
     :server-id 'bufls)))
 
 ;; 各语言调试后端
+;; (use-package dap-go
+;;         :ensure nil
+;;         :after dap-mode
+;;         :config
+;;         (setq dap-go-dlv-path (executable-find "dlv"))
+;;         (setq dap-go-debug-args '("--log")))
+
+(defun my-set-cgo-enabled-during-debug ()
+  "Prompt user to set CGO_ENABLED during debug session."
+  (interactive)
+  (let ((value (completing-read "Set CGO_ENABLED (0 or 1): " '("0" "1")))
+        (cgo-cflags (read-string "Set CGO_CFLAGS (or leave empty): ")))
+    ;; 动态设置环境变量
+    (setq dap-go-debug-env
+          `(("GOOS" . ,(shell-command-to-string "go env GOOS | tr -d '\\n'"))
+            ("GOARCH" . ,(shell-command-to-string "go env GOARCH | tr -d '\\n'"))
+            ("CGO_ENABLED" . ,value)
+            ;; 如果 CGO_CFLAGS 没有输入，则清除
+            ("CGO_CFLAGS" . ,(if (string-empty-p cgo-cflags) "" cgo-cflags))))
+    ;; 启动调试会话
+    (dap-go-debug)))
+
+(defun dap-go-debug ()
+  "Launch Go debug session with dynamic CGO_ENABLED and CGO_CFLAGS."
+  (message "Debug environment variables: %s" dap-go-debug-env)  ;; 打印调试环境变量，检查设置是否正确
+  (dap-debug
+   (list :type "go"
+         :request "launch"
+         :name "Launch Go Program"
+         :mode "debug"
+         :program (expand-file-name "main.go" (projectile-project-root))  ;; 设置你的 Go 程序路径
+         :buildFlags ""
+         :args nil
+         :env dap-go-debug-env)))  ;; 将环境变量传递给调试会话
+
 (use-package dap-go
   :ensure nil
   :after dap-mode
   :config
-  (setq dap-go-dlv-path (executable-find "dlv")))
+  (setq dap-go-dlv-path (executable-find "dlv"))
+  ;; 设置调试参数，例如 --headless 模式监听指定端口
+  (setq dap-go-debug-args '("--log" "--headless" "--listen=:2345" "--api-version=2"))
+  ;; 添加 DAP 调试模板
+  (dap-register-debug-template "Go Debug"
+                               (list :type "go"
+                                     :request "launch"
+                                     :name "Launch Go Program"
+                                     :mode "debug"
+                                     :program nil  ;; 如果不需要动态指定Go程序路径，可以保持nil
+                                     :buildFlags ""
+                                     :args nil)))
+
+;;(global-set-key (kbd "C-c d d") 'my-set-cgo-enabled-during-debug)  ;; 绑定快捷键，启动调试会话
+
 
 (use-package dap-cpptools
   :ensure nil
@@ -164,6 +213,9 @@
     (apply orig-fun args)))
 
 (advice-add 'desktop-read :around #'my/disable-lsp-during-desktop-restore)
+
+(setq lsp-enable-file-watchers nil) ;; 禁用文件监视器
+(setq lsp-file-watch-threshold 2000) ;; 限制监控文件数
 
 
 
