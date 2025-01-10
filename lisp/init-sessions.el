@@ -7,7 +7,10 @@
       desktop-auto-save-timeout 600)
 (desktop-save-mode 1)
 (setq desktop-restore-eager 5) ; 启动时仅恢复 5 个缓冲区
+(setq desktop-lazy-restore 10)        ;; 限制延迟恢复的缓冲区总数量
 (setq desktop-restore-frames nil) ; 不恢复窗口配置
+(setq history-length 10)                 ;; 限制历史记录长度
+(setq desktop-files-not-to-save "\\(\\.tmp\\|\\.log\\|/tmp/\\|\\.git/.*\\)$") ;; 忽略特定文件
 (setq desktop-restore-reuses-frames t) ; 重用现有框架
 
 

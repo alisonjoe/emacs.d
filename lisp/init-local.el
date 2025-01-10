@@ -16,7 +16,7 @@
 (require 'init-ac-php-local)
 (require 'init-golang-local)
 (require 'init-lsp-mode-local)
-(require 'init-disable-mouse-local)
+;;(require 'init-disable-mouse-local)
 (require 'init-highlight-doxygen-local)
 (require 'init-dashboard-local)
 (require 'init-org-capture-templates-local)

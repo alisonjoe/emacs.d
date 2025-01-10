@@ -21,12 +21,18 @@
 ;; 调试工具
 (use-package dap-mode
   :ensure t
-  :after lsp-mode
   :config
-  (dap-ui-mode)
-  (dap-tooltip-mode)
-  (tooltip-mode 1)
-  (dap-ui-controls-mode 1))
+  (dap-ui-mode 1)             ;; 启用dap-ui
+  (dap-tooltip-mode 1)        ;; 启用工具提示
+  ;;(dap-ui-controls-mode 1)    ;; 启用控制面板
+  (dap-ui-breakpoints-mode 1) ;; 启用断点面板
+  (add-hook 'go-mode-hook 'dap-ui-mode))  ;; 对go模式启用dap-ui
+(setq dap-debug-templates t)
+(setq dap-debug-verbose t)
+
+
+
+
 
 ;; 通用设置
 (setq gc-cons-threshold (* 100 1024 1024)
@@ -168,18 +174,18 @@
   (add-hook 'projectile-after-switch-project-hook 'my/switch-project-hook))
 
 ;; 动态启用/禁用鼠标功能
-(defun enable-mouse ()
-  "启用鼠标操作功能。"
-  (xterm-mouse-mode 1)
-  (message "Mouse enabled for debugging."))
+;; (defun enable-mouse ()
+;;   "启用鼠标操作功能。"
+;;   (xterm-mouse-mode 1)
+;;   (message "Mouse enabled for debugging."))
 
-(defun disable-mouse ()
-  "禁用鼠标操作功能。"
-  (xterm-mouse-mode -1)
-  (message "Mouse disabled after debugging."))
+;; (defun disable-mouse ()
+;;   "禁用鼠标操作功能。"
+;;   (xterm-mouse-mode -1)
+;;   (message "Mouse disabled after debugging."))
 
-(add-hook 'dap-session-created-hook #'enable-mouse)
-(add-hook 'dap-terminated-hook #'disable-mouse)
+;; (add-hook 'dap-session-created-hook #'enable-mouse)
+;; (add-hook 'dap-terminated-hook #'disable-mouse)
 
 (setq large-file-warning-threshold (* 1 1024 1024)) ;; 超过 1MB 文件时触发警告
 
