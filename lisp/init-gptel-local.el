@@ -3,15 +3,16 @@
 ;;; Code:
 (require-package 'gptel)
 
-;; OPTIONAL configuration
-(setq gptel-backend (gptel-make-azure "Azure-1"
-                                      :protocol "https"
-                                      :host "chataiwho.openai.azure.com"
-                                      :endpoint "/openai/deployments/alison-azure/chat/completions?api-version=2023-05-15"
-                                      :stream t
-                                      :key "be727c6906d5447798647babf95c03ad"
-                                      :models '("gpt-3.5-turbo" "gpt-4"))
-      )
+;; DeepSeek offers an OpenAI compatible API
+(setq gptel-model   'deepseek-chat
+        gptel-backend
+        (gptel-make-openai "DeepSeek"       ;Any name you want
+                :host "api.deepseek.com"
+                :endpoint "/chat/completions"
+                :stream t
+                :key "sk-key"               ;can be a function that returns the key
+                :models '(deepseek-chat deepseek-coder)))
+
 
 (provide 'init-gptel-local)
 ;;; init-gptel-local.el ends here
